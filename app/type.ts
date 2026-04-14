@@ -3,6 +3,7 @@ export type ProductApiResponse = {
   total: number;
   skip: number;
   limit: number;
+  category: string;
 };
 export type Dimensions = {
   width: number;

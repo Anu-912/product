@@ -1,13 +1,18 @@
 import React from "react";
 
-export const Pagination = ([
+export const Pagination = ({
   CurrentPage,
   setSkip,
   TotalPages,
   skip,
-
   PRODUCTS_PER_PAGE,
-]: [number, any, number, number, number]) => {
+}: {
+  CurrentPage: number;
+  setSkip: any;
+  TotalPages: number;
+  skip: number;
+  PRODUCTS_PER_PAGE: number;
+}) => {
   return (
     <div className='mt-10 flex items-center justify-center gap-4'>
       {/* TODO: onClick={handlePrev} disabled={skip === 0} холбох */}

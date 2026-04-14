@@ -6,7 +6,7 @@ import { Header } from "./components/Header";
 import { Card } from "./components/Card";
 import { Navigation } from "./components/Navigation";
 import { Footer } from "./components/Footer";
-import { Pagination } from "./components/pagination";
+import { Pagination } from "./components/Pagination";
 
 // API: https://dummyjson.com/products
 
@@ -18,19 +18,19 @@ export default function Home() {
   const [search, setSearch] = useState<string>("");
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(0);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState<string>("");
   const CurrentPage = skip / PRODUCTS_PER_PAGE + 1;
   const TotalPages = Math.ceil(total / PRODUCTS_PER_PAGE);
   useEffect(() => {
     let url = `https://dummyjson.com/products?limit=${PRODUCTS_PER_PAGE}&skip=${skip}`;
-    const cat = `https://dummyjson.com/products/category/${category}?limit=${PRODUCTS_PER_PAGE}&skip=${skip}`;
     if (category) {
-      cat;
+      url = `https://dummyjson.com/products/category/${category}?limit=${PRODUCTS_PER_PAGE}&skip=${skip}`;
     }
     if (search) {
       url = `https://dummyjson.com/products/search?q=${search}&limit=${PRODUCTS_PER_PAGE}&skip=${skip}`;
     }
     setLoading(true);
+
     fetch(url)
       .then((res) => {
         return res.json();
@@ -40,6 +40,7 @@ export default function Home() {
         setTotal(data.total);
         setSkip(data.skip);
         setLoading(false);
+        setCategory(data.category);
       })
       .catch((res) => {
         setError("Something went wrong.");
@@ -86,7 +87,7 @@ export default function Home() {
         </div>
 
         <p className='mb-6 text-sm text-zinc-500 dark:text-zinc-400'>
-          {/* TODO 12: Бүтээгдэхүүний тоо харуулах */}0 products found
+          {products.length} products found
         </p>
 
         {/* TODO 13: Доорх hardcode-г products.map() ашиглан солих */}
@@ -100,7 +101,13 @@ export default function Home() {
           ))}
         </div>
 
-        <Pagination />
+        <Pagination
+          CurrentPage={CurrentPage}
+          setSkip={setSkip}
+          TotalPages={TotalPages}
+          skip={skip}
+          PRODUCTS_PER_PAGE={PRODUCTS_PER_PAGE}
+        />
       </main>
 
       <Footer />
