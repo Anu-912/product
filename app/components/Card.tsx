@@ -1,9 +1,13 @@
 import React from "react";
 import { Product } from "../type";
+import Link from "next/link";
 
 export const Card = ({ product }: { product: Product }) => {
   return (
-    <div className='group rounded-2xl border border-zinc-200 bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 dark:border-zinc-800 dark:bg-zinc-900'>
+    <Link
+      href='/product/1'
+      className='block group rounded-2xl border border-zinc-200 bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 dark:border-zinc-800 dark:bg-zinc-900'
+    >
       <div className='relative overflow-hidden rounded-t-2xl bg-zinc-100 dark:bg-zinc-800'>
         <img
           src={product.thumbnail}
@@ -44,6 +48,6 @@ export const Card = ({ product }: { product: Product }) => {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
