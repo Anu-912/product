@@ -29,7 +29,6 @@ export default function Home() {
     if (search) {
       url = `https://dummyjson.com/products/search?q=${search}&limit=${PRODUCTS_PER_PAGE}&skip=${skip}`;
     }
-    setLoading(true);
 
     fetch(url)
       .then((res) => {
@@ -46,6 +45,13 @@ export default function Home() {
         setError("Something went wrong.");
       });
   }, [search, skip, category]);
+  if (loading) {
+    return (
+      <div className='w-full text-center text-2xl text-gray-500'>
+        loading ...
+      </div>
+    );
+  }
 
   // TODO 8: Хайлт хийх handler
   // function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {

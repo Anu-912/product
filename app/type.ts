@@ -54,3 +54,13 @@ export type Product = {
 export type ProductsResponse = {
   products: Product[];
 };
+export type ProductCategory = {
+  slug: string;
+  name: string;
+  url: string;
+};
+export type Body = {
+  username: string;
+  password: string;
+  expiresInMins?: number;
+};

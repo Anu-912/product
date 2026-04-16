@@ -3,9 +3,11 @@ import { Product } from "../type";
 import Link from "next/link";
 
 export const Card = ({ product }: { product: Product }) => {
+  const realPrice =
+    product.price - (product.price * product.discountPercentage) / 100;
   return (
     <Link
-      href='/product/1'
+      href={"/product/" + product.id}
       className='block group rounded-2xl border border-zinc-200 bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 dark:border-zinc-800 dark:bg-zinc-900'
     >
       <div className='relative overflow-hidden rounded-t-2xl bg-zinc-100 dark:bg-zinc-800'>
@@ -24,7 +26,7 @@ export const Card = ({ product }: { product: Product }) => {
             {product.title}
           </h2>
           <span className='shrink-0 rounded-lg bg-emerald-50 px-2.5 py-1 text-sm font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'>
-            {product.price}
+            {realPrice.toFixed(2)}$
           </span>
         </div>
         <p className='mb-3 line-clamp-2 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400'>

@@ -14,7 +14,8 @@ import { Product } from "@/app/type";
 export default function ProductDetail() {
   // TODO 4: URL-ээс id параметр авах
   const { id } = useParams();
-  const [product, setProduct] = useState<Product | any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [image, setImage] = useState<string>("");
   const [error, setError] = useState("");
   //   const router = useRouter();
 
@@ -29,6 +30,7 @@ export default function ProductDetail() {
       .then((data) => {
         if (ResponseStatus === 200) {
           setProduct(data);
+          setImage(data.thumbnail);
         } else {
           setError(data.message);
         }
@@ -52,7 +54,7 @@ export default function ProductDetail() {
           <div className='flex items-center gap-4'>
             {/* TODO 9: Link компонент ашиглах (next/link) */}
             <Link
-              href='product/1'
+              href='/'
               className='rounded-lg border border-zinc-200 px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800'
             >
               &larr; Буцах
@@ -77,7 +79,7 @@ export default function ProductDetail() {
           <div>
             <div className='overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'>
               <img
-                src={product.thumbnail}
+                src={image}
                 alt={product.title}
                 className='h-96 w-full object-cover'
               />
@@ -88,12 +90,15 @@ export default function ProductDetail() {
             <div className='mt-4 grid grid-cols-4 gap-3'>
               {product.images.map((image: string) => (
                 <button
+                  onClick={() => {
+                    setImage(image);
+                  }}
                   key={image}
                   className='overflow-hidden rounded-xl border-2 border-zinc-900 dark:border-zinc-100'
                 >
                   <img
                     src={image}
-                    alt={product.Thumbnail}
+                    alt={product.thumbnail}
                     className='h-20 w-full object-cover'
                   />
                 </button>
@@ -168,7 +173,7 @@ export default function ProductDetail() {
                     Брэнд
                   </p>
                   <p className='mt-0.5 text-sm font-medium text-zinc-900 dark:text-zinc-100'>
-                    Essence
+                    {product.brand}
                   </p>
                 </div>
                 <div>
@@ -176,7 +181,7 @@ export default function ProductDetail() {
                     Категори
                   </p>
                   <p className='mt-0.5 text-sm font-medium text-zinc-900 dark:text-zinc-100'>
-                    beauty
+                    {product.category}
                   </p>
                 </div>
                 <div>
@@ -184,7 +189,7 @@ export default function ProductDetail() {
                     Үлдэгдэл
                   </p>
                   <p className='mt-0.5 text-sm font-medium text-zinc-900 dark:text-zinc-100'>
-                    5 ширхэг
+                    {product.stock}
                   </p>
                 </div>
                 <div>
@@ -192,7 +197,7 @@ export default function ProductDetail() {
                     Хүргэлт
                   </p>
                   <p className='mt-0.5 text-sm font-medium text-zinc-900 dark:text-zinc-100'>
-                    Ships in 1 month
+                    {product.shippingInformation}
                   </p>
                 </div>
                 <div>
@@ -200,7 +205,7 @@ export default function ProductDetail() {
                     Баталгаа
                   </p>
                   <p className='mt-0.5 text-sm font-medium text-zinc-900 dark:text-zinc-100'>
-                    1 month warranty
+                    {product.warrantyInformation}
                   </p>
                 </div>
                 <div>
@@ -208,7 +213,7 @@ export default function ProductDetail() {
                     Буцаалт
                   </p>
                   <p className='mt-0.5 text-sm font-medium text-zinc-900 dark:text-zinc-100'>
-                    30 days return policy
+                    {product.returnPolicy}
                   </p>
                 </div>
               </div>
@@ -216,13 +221,28 @@ export default function ProductDetail() {
 
             {/* Stock Status */}
             {/* TODO 14: Үлдэгдлийн тоогоор өнгө өөрчлөх */}
-            {/* stock > 50: emerald, stock > 10: amber, stock <= 10: red */}
-            <div className='mt-6 flex items-center gap-2'>
-              <span className='h-2.5 w-2.5 rounded-full bg-red-500'></span>
-              <span className='text-sm font-medium text-red-600 dark:text-red-400'>
-                Бага үлдэгдэл — зөвхөн 5 ширхэг
-              </span>
-            </div>
+            {/*  , stock > 10: amber, stock <= 10: red */}
+            {product.stock > 50 ?
+              <div className='mt-6 flex items-center gap-2'>
+                <span className='h-2.5 w-2.5 rounded-full bg-emerald-500'></span>
+                <span className='text-sm font-medium text-emerald-600 dark:text-emerald-400'>
+                  {product.minimumOrderQuantity} ширхэг
+                </span>
+              </div>
+            : product.stock > 10 ?
+              <div className='mt-6 flex items-center gap-2'>
+                <span className='h-2.5 w-2.5 rounded-full bg-amber-500'></span>
+                <span className='text-sm font-medium text-amber-600 dark:text-amber-400'>
+                  {product.minimumOrderQuantity} ширхэг
+                </span>
+              </div>
+            : <div className='mt-6 flex items-center gap-2'>
+                <span className='h-2.5 w-2.5 rounded-full bg-red-500'></span>
+                <span className='text-sm font-medium text-red-600 dark:text-red-400'>
+                  {product.minimumOrderQuantity} ширхэг
+                </span>
+              </div>
+            }
 
             {/* Reviews Section */}
             {/* TODO 15: product.reviews массивыг map-аар гүйлгэх */}
@@ -231,20 +251,20 @@ export default function ProductDetail() {
                 Сэтгэгдлүүд
               </h3>
               <div className='mt-4 space-y-4'>
-                {product.reviews.map((email: string) => (
+                {product.reviews.map((review) => (
                   <div
-                    key={email}
+                    key={review.date}
                     className='rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900'
                   >
                     <div className='flex items-center justify-between'>
                       <span className='text-sm font-medium text-zinc-900 dark:text-zinc-100'>
-                        John Doe
+                        {review.reviewerName}
                       </span>
                       <div className='flex'>
                         {[1, 2, 3, 4, 5].map((star) => (
                           <svg
                             key={star}
-                            className={`h-3.5 w-3.5 ${star <= 5 ? "text-amber-400" : "text-zinc-200 dark:text-zinc-700"}`}
+                            className={`h-3.5 w-3.5 ${star <= review.rating ? "text-amber-400" : "text-zinc-200 dark:text-zinc-700"}`}
                             fill='currentColor'
                             viewBox='0 0 20 20'
                           >
@@ -254,7 +274,7 @@ export default function ProductDetail() {
                       </div>
                     </div>
                     <p className='mt-2 text-sm text-zinc-600 dark:text-zinc-400'>
-                      {product.reviews}
+                      {review.comment}
                     </p>
                   </div>
                 ))}
